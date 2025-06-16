@@ -1,4 +1,4 @@
-# fun.pump
+# launchwhirl-dapp
 
 ## Technology Stack & Tools
 
