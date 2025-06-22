@@ -17,20 +17,28 @@ import images from "./images.json";
 export default function Home() {
   const [provider, setProvider] = useState(null);
   const [account, setAccount] = useState(null);
+  const [factory, setFactory] = useState(null);
+  const [fee, setFee] = useState(0);
 
   async function loadBlockchainData() {
     // Use MetaMask for our connection
     const provider = new ethers.BrowserProvider(window.ethereum);
     setProvider(provider);
 
-    // console.log(provider);
+    // Get the current network
+    const network = await provider.getNetwork();
 
-    const accounts = await window.ethereum.request({
-      method: "eth_requestAccounts",
-    });
+    // Create reference to Factory contract
+    const factory = new ethers.Contract(
+      config[network.chainId].factory.address,
+      Factory,
+      provider
+    );
+    setFactory(factory);
 
-    // console.log(accounts[0]);
-    setAccount(accounts[0]);
+    // Fetch the fee
+    const fee = await factory.fee();
+    setFee(fee);
   }
 
   useEffect(() => {

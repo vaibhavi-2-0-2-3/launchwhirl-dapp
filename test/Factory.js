@@ -147,7 +147,6 @@ describe("Factory", function () {
 
       expect(cost).to.be.equal(ethers.parseUnits("0.0002"));
     });
-
   });
 
   describe("Depositing", function () {
@@ -192,5 +191,4 @@ describe("Factory", function () {
       expect(balance).to.equal(0);
     });
   });
-
 });

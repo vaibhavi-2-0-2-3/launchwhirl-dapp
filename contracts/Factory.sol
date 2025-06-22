@@ -1,12 +1,13 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.27;
 
 import {Token} from "./Token.sol";
 
+import "hardhat/console.sol";
+
 contract Factory {
     uint256 public constant TARGET = 3 ether;
     uint256 public constant TOKEN_LIMIT = 500_000 ether;
-
     uint256 public immutable fee;
     address public owner;
 
@@ -23,10 +24,8 @@ contract Factory {
         bool isOpen;
     }
 
-    // Events
     event Created(address indexed token);
     event Buy(address indexed token, uint256 amount);
-
 
     constructor(uint256 _fee) {
         fee = _fee;
@@ -48,23 +47,21 @@ contract Factory {
         return cost;
     }
 
-
     function create(
         string memory _name,
         string memory _symbol
     ) external payable {
-        //check if the fee is paid
-        require(msg.value >= fee, "Insufficient fee paid");
+        require(msg.value >= fee, "Factory: Creator fee not met");
 
-        //create new token
         Token token = new Token(msg.sender, _name, _symbol, 1_000_000 ether);
 
-        //save the token for later use
+        // Store token address
         tokens.push(address(token));
 
+        // Increment total tokens
         totalTokens++;
 
-        //list the token for sale
+        // Create the sale.
         TokenSale memory sale = TokenSale(
             address(token),
             _name,
@@ -74,9 +71,9 @@ contract Factory {
             true
         );
 
+        // Save the sale to mapping.
         tokenToSale[address(token)] = sale;
 
-        //tell people it's live
         emit Created(address(token));
     }
 
@@ -136,5 +133,4 @@ contract Factory {
         (bool success, ) = payable(owner).call{value: _amount}("");
         require(success, "Factory: ETH transfer failed");
     }
-
 }
