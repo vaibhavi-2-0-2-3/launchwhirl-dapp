@@ -1,4 +1,4 @@
-# launchwhirl-dapp
+# LaunchCats
 
 ## Technology Stack & Tools
 
